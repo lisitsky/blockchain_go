@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"time"
 )
 
 var (
@@ -52,11 +53,12 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	nonce := 0
 
 	fmt.Printf("Mining the block containing \"%s\"\n", pow.block.Data)
+	t := time.Now()
 	for nonce < maxNonce {
 		data := pow.prepareData(nonce)
 
 		hash = sha256.Sum256(data)
-		fmt.Printf("\r%x", hash)
+		fmt.Printf("\r%8d\t%x\t%s", nonce, hash, time.Since(t))
 		hashInt.SetBytes(hash[:])
 
 		if hashInt.Cmp(pow.target) == -1 {
